@@ -17,8 +17,4 @@ public class IndexController {
         return "头条";
     }
 
-
-
-
-
 }

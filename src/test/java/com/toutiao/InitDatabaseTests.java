@@ -1,9 +1,10 @@
 package com.toutiao;
 
+import com.toutiao.dao.LoginTicketDAO;
 import com.toutiao.dao.NewsDAO;
 import com.toutiao.dao.UserDAO;
+import com.toutiao.model.LoginTicket;
 import com.toutiao.model.News;
-
 import com.toutiao.model.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,46 +19,60 @@ import java.util.Random;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ToutiaoApplication.class)
-//@WebAppConfiguration  这行会修改默认的启动路径需要注释掉
-@Sql({"/init-schema.sql"})
+@Sql("/init-schema.sql")
 public class InitDatabaseTests {
+    @Autowired
+    UserDAO userDAO;
 
     @Autowired
     NewsDAO newsDAO;
 
     @Autowired
-    UserDAO userDAO;
+    LoginTicketDAO loginTicketDAO;
 
     @Test
-    public void InitDataBase() {
-        Random r = new Random();
-        News news = new News();
+    public void initData() {
+        Random random = new Random();
         for (int i = 0; i < 11; ++i) {
             User user = new User();
+            user.setHeadUrl(String.format("http://images.nowcoder.com/head/%dt.png", random.nextInt(1000)));
             user.setName(String.format("USER%d", i));
-            user.setHeadUrl(String.format("http://images.toutiao.com/head/%dt.png", r.nextInt(1000)));
             user.setPassword("");
             user.setSalt("");
             userDAO.addUser(user);
 
+            News news = new News();
             news.setCommentCount(i);
             Date date = new Date();
-            date.setTime(date.getTime() + 1000 * 3600 * 5 * i);
+            date.setTime(date.getTime() + 1000*3600*5*i);
             news.setCreatedDate(date);
-            news.setImage(String.format("http://images.toutiao.com/head/%dm.png", r.nextInt(1000)));
-            news.setLikeCount(i + 1);
-            news.setLink(String.format("http://www.toutiao.com/link/{%d}.html", i));
-            news.setTitle(String.format("Title {%d} ", i));
+            news.setImage(String.format("http://images.nowcoder.com/head/%dm.png", random.nextInt(1000)));
+            news.setLikeCount(i+1);
             news.setUserId(i+1);
+            news.setTitle(String.format("TITLE{%d}", i));
+            news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
             newsDAO.addNews(news);
-            System.out.println(news.getId());
 
             user.setPassword("newpassword");
             userDAO.updatePassword(user);
+
+            LoginTicket ticket = new LoginTicket();
+            ticket.setStatus(0);
+            ticket.setUserId(i+1);
+            ticket.setExpired(date);
+            ticket.setTicket(String.format("TICKET%d", i+1));
+            loginTicketDAO.addTicket(ticket);
+
+            loginTicketDAO.updateStatus(ticket.getTicket(), 2);
+
         }
 
         Assert.assertEquals("newpassword", userDAO.selectById(1).getPassword());
         userDAO.deleteById(1);
         Assert.assertNull(userDAO.selectById(1));
+
+        Assert.assertEquals(1, loginTicketDAO.selectByTicket("TICKET1").getUserId());
+        Assert.assertEquals(2, loginTicketDAO.selectByTicket("TICKET1").getStatus());
     }
+
 }
