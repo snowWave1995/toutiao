@@ -5,7 +5,7 @@ import com.toutiao.model.User;
 import org.apache.ibatis.annotations.*;
 
 /**
- * Created by nowcoder on 2016/7/2.
+ * Created by snowWave.
  */
 @Mapper
 public interface LoginTicketDAO {

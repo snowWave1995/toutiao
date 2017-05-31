@@ -78,24 +78,24 @@
                     #end
                         <div class="post">
                             <div class="votebar">
-                                #if ($vo.like>0)
-                                <button class="click-like up pressed" data-id="$!{vo.news.nid}" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>
-                                <button class="click-dislike down" data-id="$!{vo.news.nid}" aria-pressed="true" title="反对"><i class="vote-arrow"></i></button>
-                                #elseif ($vo.like<0)
-                                <button class="click-like up" data-id="$!{vo.news.nid}" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>
-                                <button class="click-dislike down pressed" data-id="$!{vo.news.nid}" aria-pressed="true" title="反对"><i class="vote-arrow"></i></button>
+                                #if ($vo.like > 0)
+                                <button class="click-like up pressed" data-id="$!{vo.news.id}" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>
                                 #else
-                                <button class="click-like up" data-id="$!{vo.news.nid}" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>
-                                <button class="click-dislike down" data-id="$!{vo.news.nid}" aria-pressed="true" title="反对"><i class="vote-arrow"></i></button>
+                                <button class="click-like up" data-id="$!{vo.news.id}" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>
+                                #end
+                                #if($vo.like < 0)
+                                <button class="click-dislike down pressed" data-id="$!{vo.news.id}" title="反对"><i class="vote-arrow"></i></button>
+                                #else
+                                <button class="click-dislike down" data-id="$!{vo.news.id}" title="反对"><i class="vote-arrow"></i></button>
                                 #end
                             </div>
-                            <div class="content" data-url="/news/$!{news.nid}">
+                            <div class="content" data-url="/news/$!{news.id}">
                                 <div >
                                     <img class="content-img" src="$!{vo.news.image}" alt="">
                                 </div>
                                 <div class="content-main">
                                     <h3 class="title">
-                                        <a target="_blank" rel="external nofollow" href="/news/$!{vo.news.nid}">$!{vo.news.title}</a>
+                                        <a target="_blank" rel="external nofollow" href="/news/$!{vo.news.id}">$!{vo.news.title}</a>
                                     </h3>
                                     <div class="meta">
                                         <a href="$!{vo.news.link}">$!{vo.news.link}</a>
@@ -107,7 +107,7 @@
                             </div>
                             <div class="user-info">
                                 <div class="user-avatar">
-                                    <a href="/user/$!{vo.user.uid}/"><img width="32" class="img-circle" src="$!{vo.user.headUrl}"></a>
+                                    <a href="/user/$!{vo.user.id}/"><img width="32" class="img-circle" src="$!{vo.user.headUrl}"></a>
                                 </div>
 
                                 <!--
@@ -122,7 +122,7 @@
                                 -->
                             </div>
 
-                            <div class="subject-name">来自 <a href="/user/$!{vo.user.uid}/">$!{vo.user.username}</a></div>
+                            <div class="subject-name">来自 <a href="/user/$!{vo.user.id}/">$!{vo.user.name}</a></div>
                         </div>
 
                         <!--

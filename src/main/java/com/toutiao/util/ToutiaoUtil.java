@@ -9,10 +9,26 @@ import java.security.MessageDigest;
 import java.util.Map;
 
 /**
- * Created by nowcoder on 2016/7/3.
+ * Created by snowWave.
  */
 public class ToutiaoUtil {
     private static final Logger logger = LoggerFactory.getLogger(ToutiaoUtil.class);
+
+    public static String TOUTIAO_DOMAIN = "http://127.0.0.1:8080/";//文件路径前缀
+    public static String IMAGE_DIR = "D:/upload/";
+    public static String[] IMAGE_FILE_EXTD = new String[] {"png", "bmp", "jpg", "jpeg"};
+
+
+    //判断文件名是否合法
+    public static boolean isFileAllowed(String fileName) {
+        for (String ext : IMAGE_FILE_EXTD) {
+            if (ext.equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public static String getJSONString(int code) {
         JSONObject json = new JSONObject();

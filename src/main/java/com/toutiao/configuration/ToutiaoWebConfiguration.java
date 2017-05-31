@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 /**
  * 注册拦截器
- * Created by nowcoder on 2016/7/3.
+ * Created by snowWave.
  */
 @Component
 public class ToutiaoWebConfiguration extends WebMvcConfigurerAdapter {
