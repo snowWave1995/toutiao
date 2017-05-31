@@ -1,25 +1,27 @@
 package com.toutiao.controller;
 
-import com.toutiao.model.HostHolder;
-import com.toutiao.model.News;
+import com.toutiao.model.*;
+import com.toutiao.service.CommentService;
 import com.toutiao.service.NewsService;
 import com.toutiao.service.QiniuService;
+import com.toutiao.service.UserService;
 import com.toutiao.util.ToutiaoUtil;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by snowWave.
@@ -38,6 +40,44 @@ public class NewsController {
 
     @Autowired
     HostHolder hostHolder;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    CommentService commentService;
+
+    /**
+     * 获取新闻详情
+     * @param newsId
+     * @param model
+     * @return
+     */
+    @RequestMapping(path = {"/news/{newsId}"}, method = {RequestMethod.GET})
+    public String newsDetail(@PathVariable("newsId") int newsId, Model model) {
+        try {
+            News news = newsService.getById(newsId);
+            if (news != null) {
+
+
+                //找出这条新闻所有的评论
+                List<Comment> comments = commentService.getCommentsByEntity(news.getId(), EntityType.ENTITY_NEWS);
+                List<ViewObject> commentVOs = new ArrayList<ViewObject>();
+                for (Comment comment : comments) {
+                    ViewObject commentVO = new ViewObject();
+                    commentVO.set("comment", comment);
+                    commentVO.set("user", userService.getUser(comment.getUserId()));
+                    commentVOs.add(commentVO);
+                }
+                model.addAttribute("comments", commentVOs);
+            }
+            model.addAttribute("news", news);
+            model.addAttribute("owner", userService.getUser(news.getUserId()));
+        } catch (Exception e) {
+            logger.error("获取资讯明细错误" + e.getMessage());
+        }
+        return "detail";
+    }
 
     /**
      * 返回(展示)图片
@@ -93,7 +133,7 @@ public class NewsController {
     public String addNews(@RequestParam("image") String image,
                           @RequestParam("title") String title,
                           @RequestParam("link") String link) {
-        System.out.println("哈哈");
+
         try {
             News news = new News();
             news.setCreatedDate(new Date());
