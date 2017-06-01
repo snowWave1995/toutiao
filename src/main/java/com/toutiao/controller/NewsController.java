@@ -1,10 +1,7 @@
 package com.toutiao.controller;
 
 import com.toutiao.model.*;
-import com.toutiao.service.CommentService;
-import com.toutiao.service.NewsService;
-import com.toutiao.service.QiniuService;
-import com.toutiao.service.UserService;
+import com.toutiao.service.*;
 import com.toutiao.util.ToutiaoUtil;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
@@ -47,6 +44,8 @@ public class NewsController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    LikeService likeService;
     /**
      * 获取新闻详情
      * @param newsId
@@ -58,7 +57,12 @@ public class NewsController {
         try {
             News news = newsService.getById(newsId);
             if (news != null) {
-
+                int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
+                if (localUserId != 0) {
+                    model.addAttribute("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
+                } else {
+                    model.addAttribute("like", 0);
+                }
 
                 //找出这条新闻所有的评论
                 List<Comment> comments = commentService.getCommentsByEntity(news.getId(), EntityType.ENTITY_NEWS);

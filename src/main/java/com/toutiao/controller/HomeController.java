@@ -1,8 +1,7 @@
 package com.toutiao.controller;
 
-import com.toutiao.model.News;
-import com.toutiao.model.User;
-import com.toutiao.model.ViewObject;
+import com.toutiao.model.*;
+import com.toutiao.service.LikeService;
 import com.toutiao.service.NewsService;
 import com.toutiao.service.UserService;
 import org.slf4j.Logger;
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -26,10 +21,18 @@ public class HomeController {
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired
-    private NewsService newsService;
+    NewsService newsService;
 
     @Autowired
-    private UserService userService;
+    UserService userService;
+
+    @Autowired
+    LikeService likeService;
+
+    @Autowired
+    HostHolder hostHolder;
+
+
 
     @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String index(@RequestParam(value = "userId", defaultValue = "0") int userId,
@@ -49,12 +52,19 @@ public class HomeController {
     private List<ViewObject> getNews(int userId, int offset, int limit) {
 
         List<News> newsList = newsService.getLatestNews(userId, offset, limit);
-
+        int localUserId = hostHolder.getUser() != null ? hostHolder.getUser().getId() : 0;
         List<ViewObject> vos = new ArrayList<>();
         for (News news : newsList) {
             ViewObject vo = new ViewObject();
             vo.set("news", news);
             vo.set("user", userService.getUser(news.getUserId()));
+
+            //判断用户是否喜欢某条新闻，显示按压效果
+            if (localUserId != 0) {
+                vo.set("like", likeService.getLikeStatus(localUserId, EntityType.ENTITY_NEWS, news.getId()));
+            } else {
+                vo.set("like", 0);
+            }
             vos.add(vo);
         }
         return vos;
