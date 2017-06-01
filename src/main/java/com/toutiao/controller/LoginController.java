@@ -69,24 +69,28 @@ public class LoginController {
      * @param model
      * @param username
      * @param password
-     * @param rememberme
+     * @param rember
      * @return
      */
     @RequestMapping(path = {"/login/"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String login(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
-                      @RequestParam(value="rember", defaultValue = "0") int rememberme) {
+                        @RequestParam(value = "rember", defaultValue = "0") int rember,
+                        HttpServletResponse response) {
         try {
             Map<String, Object> map = userService.register(username, password);
             if (map.containsKey("ticket")) {
+                //设置cookie
                 Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
                 cookie.setPath("/");
-                if (rememberme > 0) {
+                if (rember > 0) {
                     cookie.setMaxAge(3600*24*5);
                 }
-                return ToutiaoUtil.getJSONString(0, "注册成功");
+                response.addCookie(cookie);
+                return ToutiaoUtil.getJSONString(0, "用户登录成功");
             } else {
+
                 return ToutiaoUtil.getJSONString(1, map);
             }
 
