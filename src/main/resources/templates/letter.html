@@ -1,42 +1,44 @@
 #parse("header.html")
-    <div id="main">
-        <div class="container">
-            <ul class="letter-list">
-                #foreach($vo in $convVos)
-                <li id="conversation-item-10005_622873">
-                    <a class="letter-link" href="/msg/detail?conversationId=$!{vo.conversation.conversationId}"></a>
-                    <div class="letter-info">
-                        <span class="l-time">$date.format('yyyy-MM-dd HH:mm:ss', $!{vo.conversation.createdDate})</span>
-                        <div class="l-operate-bar">
-                            <a href="javascript:void(0);" class="sns-action-del" data-id="10005_622873">
-                                删除
-                            </a>
-                            <a href="/msg/detail?conversationId=$!{vo.conversation.conversationId}">
-                                共$!{vo.conversation.msgid}条会话
-                            </a>
-                        </div>
+<div id="main">
+    <div class="container">
+        <ul class="letter-list">
+            #foreach($conversation in $conversations)
+            <li id="conversation-item-10005_622873">
+                <a class="letter-link" href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}"></a>
+                <div class="letter-info">
+                    <span class="l-time">$date.format('yyyy-MM-dd HH:mm:ss', $!{conversation.conversation.createdDate})</span>
+                    <div class="l-operate-bar">
+                        <!--
+                        <a href="javascript:void(0);" class="sns-action-del" data-id="">
+                        删除
+                        </a>
+                        -->
+                        <a href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}">
+                            共$!{conversation.conversation.id}条会话
+                        </a>
                     </div>
-                    <div class="chat-headbox">
+                </div>
+                <div class="chat-headbox">
                         <span class="msg-num">
-                            $!{vo.unreadCount}
+                            $!{conversation.unreadCount}
                         </span>
-                        <a class="list-head" href="/user/$!{vo.anotherUser.uid}">
-                            <img alt="头像" src="$!{vo.anotherUser.headUrl}">
+                    <a class="list-head" href="/user/$!{conversation.userId}">
+                        <img alt="头像" src="$!{conversation.headUrl}">
+                    </a>
+                </div>
+                <div class="letter-detail">
+                    <a title="$!{conversation.userName}" class="letter-name level-color-1">
+                        $!{conversation.userName}
+                    </a>
+                    <p class="letter-brief">
+                        <a href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}">
+                            $!{conversation.conversation.content}
                         </a>
-                    </div>
-                    <div class="letter-detail">
-                        <a title="$!{vo.anotherUser.username}" class="letter-name level-color-1">
-                            与$!{vo.anotherUser.username}的会话
-                        </a>
-                        <p class="letter-brief">
-                            <a href="/msg/detail?conversationId=$!{vo.conversation.conversationId}">
-                                $!{vo.conversation.content}
-                            </a>
-                        </p>
-                    </div>
-                </li>
-                #end
-            </ul>
+                    </p>
+                </div>
+            </li>
+            #end
+        </ul>
 
         </div>
         <script type="text/javascript">

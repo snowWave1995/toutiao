@@ -31,11 +31,20 @@ public class MessageController {
     @Autowired
     MessageService messageService;
 
+
+    /**
+     * 获取对话详情
+     * @param model
+     * @param conversationId
+     * @return
+     */
     @RequestMapping(path = {"/msg/detail"}, method = {RequestMethod.GET})
     public String conversationDetail(Model model, @RequestParam("conversationId") String conversationId) {
         try {
             List<ViewObject> messages = new ArrayList<>();
+            //一页显示10条
             List<Message> conversationList = messageService.getConversationDetail(conversationId, 0, 10);
+
             for (Message msg : conversationList) {
                 ViewObject vo = new ViewObject();
                 vo.set("message", msg);
@@ -45,16 +54,23 @@ public class MessageController {
                 }
                 vo.set("headUrl", user.getHeadUrl());
                 vo.set("userName", user.getName());
+
                 messages.add(vo);
             }
             model.addAttribute("messages", messages);
             return "letterDetail";
         } catch (Exception e) {
-            logger.error("获取站内信列表失败" + e.getMessage());
+            logger.error("获取详情消息失败" + e.getMessage());
         }
         return "letterDetail";
     }
 
+
+    /**
+     * 获取消息列表
+     * @param model
+     * @return
+     */
     @RequestMapping(path = {"/msg/list"}, method = {RequestMethod.GET})
     public String conversationList(Model model) {
         try {
@@ -64,7 +80,9 @@ public class MessageController {
             for (Message msg : conversationList) {
                 ViewObject vo = new ViewObject();
                 vo.set("conversation", msg);
+
                 int targetId = msg.getFromId() == localUserId ? msg.getToId() : msg.getFromId();
+
                 User user = userService.getUser(targetId);
                 vo.set("headUrl", user.getHeadUrl());
                 vo.set("userName", user.getName());

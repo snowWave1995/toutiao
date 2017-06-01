@@ -37,7 +37,7 @@ public class LoginController {
      * @param response
      * @return
      */
-    @RequestMapping(path = {"/register/"}, method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(path = {"/register/","/register"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String reg(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
@@ -72,7 +72,7 @@ public class LoginController {
      * @param rember
      * @return
      */
-    @RequestMapping(path = {"/login/"}, method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(path = {"/login/","/login"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String login(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
@@ -105,7 +105,7 @@ public class LoginController {
      * @param ticket
      * @return
      */
-    @RequestMapping(path = {"/logout/"}, method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(path = {"/logout/", "/logout"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
         return "redirect:/";

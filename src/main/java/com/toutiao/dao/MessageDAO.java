@@ -21,15 +21,19 @@ public interface MessageDAO {
             ") values (#{fromId},#{toId},#{content},#{hasRead},#{conversationId},#{createdDate})"})
     int addMessage(Message message);
 
+    //获取对话列表
     @Select({"select ", INSERT_FIELDS, " ,count(id) as id from ( select * from ", TABLE_NAME, " where from_id=#{userId} or to_id=#{userId} order by id desc) tt group by conversation_id order by id desc limit #{offset},#{limit}"})
     List<Message> getConversationList(@Param("userId") int userId, @Param("offset") int offset, @Param("limit") int limit);
 
+    //获取未读数量
     @Select({"select count(id) from ", TABLE_NAME, " where has_read = 0 and to_id=#{userId} and conversation_id=#{conversationId}"})
     int getConversationUnReadCount(@Param("userId") int userId, @Param("conversationId") String conversationId);
 
     @Select({"select count(id) from ", TABLE_NAME, " where has_read = 0 and to_id=#{userId}"})
     int getConversationTotalCount(@Param("userId") int userId, @Param("conversationId") String conversationId);
 
+
+    //获取一个会话的所有内容
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where conversation_id=#{conversationId} order by id desc limit #{offset},#{limit}"})
     List<Message> getConversationDetail(@Param("conversationId") String conversationId, @Param("offset") int offset, @Param("limit") int limit);
 }
