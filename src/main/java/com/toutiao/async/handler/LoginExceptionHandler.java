@@ -33,20 +33,24 @@ public class LoginExceptionHandler implements EventHandler {
     @Override
     public void doHandle(EventModel event) {
 
+        // 判断是否有异常登陆
         Message message = new Message();
-        message.setFromId(3);  //登录异常由信息发给账户异常用户;
-        message.setToId(event.getEntityOwnerId());
-        User affectedUser = userService.getUser(event.getEntityOwnerId());
-        System.out.println("==============" + event.getExt("datetime"));
-        message.setContent( "[系统提示] " + affectedUser.getName() + ",您的账户于" + event.getExt("datetime") + "发生登录异常, 异常信息是: " + event.getExt("ExceptionInfo") + ". 请您注意账号安全!");
+
+        message.setToId(event.getActorId());
+        message.setFromId(3);
+
+        message.setContent("你上次的登陆ip异常");
+
         message.setHasRead(0);
         message.setCreatedDate(new Date());
-        message.setConversationId(3<event.getEntityOwnerId()?
-                3+"_"+event.getEntityOwnerId():event.getEntityOwnerId()+"_"+3);
+        message.setConversationId(3 < event.getEntityOwnerId()? 3+"_"+event.getEntityOwnerId():event.getEntityOwnerId()+"_"+3);
+
         messageService.addMessage(message);
-        Map<String, Object> mailInfoMap = new HashMap<String, Object>();
-        mailInfoMap.put("username", affectedUser.getName());
-        mailSender.sendWithHTMLTemplate(event.getExt("email"), "账户异常提醒", "mails/loginException.html", mailInfoMap);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("username", event.getExt("username"));
+        mailSender.sendWithHTMLTemplate(event.getExt("email"), "登陆异常", "mails/welcome.html",
+                map);
     }
 
     @Override

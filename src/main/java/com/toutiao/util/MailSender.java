@@ -48,7 +48,7 @@ public class MailSender implements InitializingBean {
             //昵称
             String nick = MimeUtility.encodeText("头条管理站");
             //发件人
-            InternetAddress from = new InternetAddress(nick + "<zfq1995@126.com>");
+            InternetAddress from = new InternetAddress(nick + "<2450756004@qq.com>");
             //构造邮件
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
@@ -74,7 +74,7 @@ public class MailSender implements InitializingBean {
 
         // 设置个人邮箱信息（收件者）
         mailSender.setUsername("2450756004@qq.com");
-        mailSender.setPassword("123zhang");
+        mailSender.setPassword("hsbykusgcnaidiei");
         mailSender.setHost("smtp.qq.com");//发送的服务器
         mailSender.setPort(465);
         mailSender.setProtocol("smtps");

@@ -100,6 +100,8 @@ public class UserService {
             return map;
         }
 
+        map.put("userId", user.getId());
+
         String ticket = addLoginTicket(user.getId());
         map.put("ticket", ticket);
         return map;

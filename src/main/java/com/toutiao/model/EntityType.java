@@ -5,4 +5,7 @@ package com.toutiao.model;
  */
 public class EntityType {
     public static int ENTITY_NEWS = 1;
+    public static int COMMENT = 2;
+    public static int ACCOUNT = 3;
 }
+
