@@ -1,5 +1,8 @@
 package com.toutiao.controller;
 
+import com.toutiao.async.EventModel;
+import com.toutiao.async.EventProducer;
+import com.toutiao.async.EventType;
 import com.toutiao.model.News;
 import com.toutiao.model.ViewObject;
 import com.toutiao.service.NewsService;
@@ -28,6 +31,9 @@ public class LoginController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    EventProducer eventProducer;
+
     /**
      * 用户注册
      * @param model
@@ -41,7 +47,7 @@ public class LoginController {
     @ResponseBody
     public String reg(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
-                      @RequestParam(value="rember", defaultValue = "0") int rememberme,
+                      @RequestParam(name = "rember", defaultValue = "0") int rememberme,
                       HttpServletResponse response) {
         try {
             Map<String, Object> map = userService.register(username, password);
@@ -66,7 +72,6 @@ public class LoginController {
 
     /**
      * 用户登录
-     * @param model
      * @param username
      * @param password
      * @param rember
@@ -74,9 +79,10 @@ public class LoginController {
      */
     @RequestMapping(path = {"/login/","/login"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public String login(Model model, @RequestParam("username") String username,
-                      @RequestParam("password") String password,
-                        @RequestParam(value = "rember", defaultValue = "0") int rember,
+    public String login(Model model,
+                        @RequestParam("username") String username,
+                        @RequestParam("password") String password,
+                        @RequestParam(name = "rember", defaultValue = "0") int rember,
                         HttpServletResponse response) {
         try {
             Map<String, Object> map = userService.register(username, password);
@@ -88,6 +94,11 @@ public class LoginController {
                     cookie.setMaxAge(3600*24*5);
                 }
                 response.addCookie(cookie);
+
+                eventProducer.fireEvent(new
+                        EventModel(EventType.LOGIN).setActorId((int) map.get("userId"))
+                        .setExt("username", username).setExt("to", "2450756004@qq.com"));
+
                 return ToutiaoUtil.getJSONString(0, "用户登录成功");
             } else {
 
@@ -95,8 +106,8 @@ public class LoginController {
             }
 
         } catch (Exception e) {
-            logger.error("注册异常" + e.getMessage());
-            return ToutiaoUtil.getJSONString(1, "注册异常");
+            logger.error("登录出错" + e.getMessage());
+            return ToutiaoUtil.getJSONString(1, "用户登录异常");
         }
     }
 
