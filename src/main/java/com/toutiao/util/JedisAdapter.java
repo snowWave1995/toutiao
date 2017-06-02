@@ -18,15 +18,15 @@ import java.util.List;
 public class JedisAdapter implements InitializingBean{        //启动时初始化
     private static final Logger logger = LoggerFactory.getLogger(JedisAdapter.class);
 
-
+/*
     public static void print(int index, Object obj) {
         System.out.println(String.format("%d,%s", index, obj.toString()));
     }
-
+*/
 
     public static void main(String[] args) {
         Jedis jedis = new Jedis();
-        jedis.flushAll();//把数据库都删掉
+        //jedis.flushAll();//把数据库都删掉
         // get,set
         /*
         jedis.set("hello", "world");
@@ -82,7 +82,8 @@ public class JedisAdapter implements InitializingBean{        //启动时初始�
         jedis.hsetnx(userKey, "school", "zju");//不存在时设置
         jedis.hsetnx(userKey, "name", "yxy");
         print(19, jedis.hgetAll(userKey));
-
+        */
+        /*
         // set集合，点赞用户群, 共同好友
         String likeKey1 = "newsLike1";
         String likeKey2 = "newsLike2";
@@ -106,7 +107,7 @@ public class JedisAdapter implements InitializingBean{        //启动时初始�
 
 
 
-
+        /*
         // zsort 排序集合，有限队列，排行榜
         String rankKey = "rankKey";
         jedis.zadd(rankKey, 15, "Jim");
@@ -158,7 +159,7 @@ public class JedisAdapter implements InitializingBean{        //启动时初始�
         print(45, jedis.brpop(0, "aaa"));
         */
 
-
+        /*
         JedisPool pool = new JedisPool();//线程池大小默认是8
         for (int i = 0; i < 100; ++i) {
             Jedis j = pool.getResource();
@@ -167,7 +168,7 @@ public class JedisAdapter implements InitializingBean{        //启动时初始�
           //  j.close();//把每条放回去
         }
 
-
+        */
     }
 
 
@@ -180,6 +181,8 @@ public class JedisAdapter implements InitializingBean{        //启动时初始�
         //jedis = new Jedis("localhost");
         pool = new JedisPool("localhost", 6379);
     }
+
+
 
     public String get(String key) {
         Jedis jedis = null;
@@ -339,10 +342,12 @@ public class JedisAdapter implements InitializingBean{        //启动时初始�
         }
     }
 
+    //set可以保存一个json对象
     public void setObject(String key, Object obj) {
         set(key, JSON.toJSONString(obj));
     }
 
+    //获取对象
     public <T> T getObject(String key, Class<T> clazz) {
         String value = get(key);
         if (value != null) {

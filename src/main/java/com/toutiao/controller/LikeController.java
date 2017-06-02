@@ -1,5 +1,8 @@
 package com.toutiao.controller;
 
+import com.toutiao.async.EventModel;
+import com.toutiao.async.EventProducer;
+import com.toutiao.async.EventType;
 import com.toutiao.model.EntityType;
 import com.toutiao.model.HostHolder;
 import com.toutiao.model.News;
@@ -30,6 +33,8 @@ public class LikeController {
     @Autowired
     NewsService newsService;
 
+    @Autowired
+    EventProducer eventProducer;
 
 
     /**
@@ -44,8 +49,13 @@ public class LikeController {
         int likeCount = (int)likeService.like(hostHolder.getUser().getId(), EntityType.ENTITY_NEWS, nid);
         // 更新喜欢数
 
+        News news = newsService.getById(nid);
         newsService.updateLikeCount(nid, (int) likeCount);
 
+        //异步解决 方法都是返回this，所以可以使用调用链
+        eventProducer.fireEvent(new EventModel(EventType.LIKE)
+                .setEntityOwnerId(news.getUserId())
+                .setActorId(hostHolder.getUser().getId()).setEntityId(nid));
 
         return ToutiaoUtil.getJSONString(0, String.valueOf(likeCount));
     }
