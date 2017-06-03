@@ -25,12 +25,12 @@ public class QiniuService {
 
     private static String QINIU_IMAGE_DOMAIN = "http://oqm8cnjt1.bkt.clouddn.com/";
 
-    Configuration cfg = new Configuration(Zone.zone1());
+    Configuration cfg = new Configuration(Zone.zone0());//华东区是zone0
     //设置好账号的ACCESS_KEY和SECRET_KEY
-    String ACCESS_KEY = "ep9wUBE6MhXxUYS0lEEpug5_Fn2pXIuttVi3BbXO";
-    String SECRET_KEY = "dGItqQ4uEHD03I7IRAu3OLSdCNVBAh22gndRIzt_";
+    static String ACCESS_KEY = "ep9wUBE6MhXxUYS0lEEpug5_Fn2pXIuttVi3BbXO";
+    static String SECRET_KEY = "dGItqQ4uEHD03I7IRAu3OLSdCNVBAh22gndRIzt_";
     //要上传的空间
-    String bucketname = "toutiao";
+    static String bucketname = "toutiao";
 
     //密钥配置
     Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
@@ -63,8 +63,9 @@ public class QiniuService {
             }
 
             //改文件名  和传本地方法一样
-            String fileName = UUID.randomUUID().toString().replaceAll("-", "") + "." + fileExt;
+            String fileName = UUID.randomUUID().toString().replaceAll("-", "0") + "." + fileExt;
 
+            System.out.println(fileName);
             System.out.println(getUpToken());
             System.out.println(uploadManager);
 
@@ -80,6 +81,7 @@ public class QiniuService {
         } catch (QiniuException e) {
             // 请求失败时打印的异常的信息
             logger.error("七牛异常2:" + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }

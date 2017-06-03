@@ -20,9 +20,9 @@ public class ToutiaoUtil {
 
 
     //判断文件名是否合法
-    public static boolean isFileAllowed(String fileName) {
-        for (String ext : IMAGE_FILE_EXTD) {
-            if (ext.equals(fileName)) {
+    public static boolean isFileAllowed(String ext) {
+        for (String format:IMAGE_FILE_EXTD) {
+            if (ext.toLowerCase().equals(format)) {
                 return true;
             }
         }
