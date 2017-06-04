@@ -71,7 +71,7 @@ public class QiniuService {
 
             //调用put方法上传
             Response res = uploadManager.put(file.getBytes(), fileName, getUpToken());
-            //打印返回的信息
+            //打印返回的信息,在七牛的存储路径
             if (res.isOK() && res.isJson()) {
                 return QINIU_IMAGE_DOMAIN + JSONObject.parseObject(res.bodyString()).get("key");
             } else {
